@@ -23,7 +23,8 @@ class DBManager:
                 message TEXT,
                 reply_id TEXT,
                 admin_id TEXT,
-                message_read_state INTEGER)
+                message_read_state INTEGER,
+                photo_id INTEGER)
                 """)
 
         self.conn.execute("""
@@ -51,10 +52,10 @@ class DBManager:
 
     # Defining database methods
     # Saving message recieved from users to database history table
-    def save_message(self, chat_id, user_id, user_name, message, message_id, message_date, reply_id, admin_id):
+    def save_message(self, chat_id, user_id, user_name, message, message_id, message_date, reply_id, admin_id, photo_id=None):
         self.conn.execute("""
-        INSERT INTO history (user_id, chat_id, user_name, message_id, message_date, message, reply_id, admin_id, message_read_state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (chat_id, user_id, user_name, message_id, message_date, message, reply_id, admin_id, 0))
+        INSERT INTO history (user_id, chat_id, user_name, message_id, message_date, message, reply_id, admin_id, message_read_state, photo_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (chat_id, user_id, user_name, message_id, message_date, message, reply_id, admin_id, 0, photo_id))
         self.conn.commit()
     
     def save_user(self, user_id, user_name):
@@ -86,8 +87,12 @@ class DBManager:
 
     # Getting all messages from a specific user from database
     def get_user_messages(self, user_id):
-        cursor = self.conn.execute("""SELECT message_id, message_date, reply_id, admin_id, message FROM history WHERE user_id = ?""", (user_id,))
+        cursor = self.conn.execute("""SELECT message_id, message_date, reply_id, admin_id, message, message_read_state, photo_id FROM history WHERE user_id = ?""", (user_id,))
         return cursor.fetchall()
+    
+    def update_message_read_state(self, user_id, message_id):
+        self.conn.execute("UPDATE history SET message_read_state = 1 WHERE user_id = ? AND message_id = ?", (user_id, message_id))
+        self.conn.commit()
 
     # Getting user's name from database
     def get_users_name(self, user_id):

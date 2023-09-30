@@ -28,6 +28,7 @@ def main():
     # Adding Message Handlers
     application.add_handler(MessageHandler(filters.REPLY, reply))
     application.add_handler(MessageHandler(filters.TEXT, message))
+    application.add_handler(MessageHandler(filters.PHOTO, photo_handler))
     # Adding CallbackQuery Handlers
     application.add_handler(CallbackQueryHandler(button_pressed))
 

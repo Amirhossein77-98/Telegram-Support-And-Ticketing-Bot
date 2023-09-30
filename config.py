@@ -6,7 +6,7 @@ channel_id = "@channel_id"
 admin_id = ['admin ID(s) --> int'] # Allowed user IDs
 
 # Bot Settings
-bot_token = "BOT TOKEN"
+bot_token = "BOT-TOKEN"
 
 # App Settings
 timezone = 'Asia/Tehran'
@@ -44,4 +44,5 @@ bot_warnings = {
     'weak_mind': 'Sorry I lost the message, Please send /inbox again and choose user to reply to their message.',
     'undefined_admin_message': 'I don\'t know what to do with this message. Please reply to a user\'s message or use commands.',
     'join_channel': 'Please join our channel first to use this bot.\n\n@channel_id',
+    'all_messages_read': 'There is no Unred message from this user. If you want to see their chat history click on the button above👆'
 }

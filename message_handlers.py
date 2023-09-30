@@ -5,6 +5,7 @@ import database_manager
 import config
 from config import bot_warnings
 import functions
+import os
 
 async def reply(update: Update, context: CallbackContext):
 
@@ -89,7 +90,44 @@ async def message(update: Update, context: CallbackContext) -> None:
     reply_id = 0
 
     
-    database_manager.db.save_message(chat_id, user_id, user_name, message, message_id, date_str, reply_id, 0)
+    database_manager.db.save_message(chat_id, user_id, user_name, message, message_id, date_str, reply_id, 0, None)
+
+    await update.message.reply_text(text_messages['approve_user_message_sent_to_support_team'])
+    for admin in config.admin_id:
+        await context.bot.send_message(chat_id=admin, text=text_messages['new_message_notification'].format(user_name))
+
+async def photo_handler(update: Update, context: CallbackContext) -> None:
+    """Echo the user's message and save it"""
+    user_id = update.message.from_user.id
+
+    if is_blocked(user_id):
+        await update.message.reply_text(text_messages['youre_blocked'])
+        return
+
+    if not await require_subscription(update, context):
+        return
+    
+    if user_id in admin_id:
+        await update.message.reply_text(bot_warnings['undefined_admin_message'])
+        return
+
+    chat_id = update.message.chat.id
+    user_name = update.message.from_user.first_name
+    message = update.message.caption
+    message_id = update.message.message_id
+    photo_file_id = update.message.photo[-1].file_id
+    photo_file_object = await context.bot.get_file(photo_file_id)
+    message_date = update.message.date
+    date_str = functions.convert_time(message_date)
+    reply_id = 0
+
+    if os.path.exists(f'images/{user_id}'):
+        await photo_file_object.download_to_drive(f'images/{user_id}/photo_{photo_file_id}.jpg')
+    else:
+        os.makedirs(f'images/{user_id}', exist_ok=True)
+        await photo_file_object.download_to_drive(f'images/{user_id}/photo_{photo_file_id}.jpg')
+
+    database_manager.db.save_message(chat_id, user_id, user_name, message, message_id, date_str, reply_id, 0, photo_file_id)
 
     await update.message.reply_text(text_messages['approve_user_message_sent_to_support_team'])
     for admin in config.admin_id:
