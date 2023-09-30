@@ -8,11 +8,12 @@ This is a Telegram bot built using python-telegram-bot V20.4 library to provide 
 - Admins can block/unblock users
 - Admins can delete chat histories
 - Message history stored in SQLite database
-- Users must join a channel before accessing bot
+- Users must join channel before accessing bot
+- Supports photos
 
 # Usage
 **Users**
-- Must join configured channel before accessing bot
+- Must join configured channels before accessing bot
 - Use /start to initialize bot
 - Message the bot to create a ticket
 
@@ -21,6 +22,7 @@ This is a Telegram bot built using python-telegram-bot V20.4 library to provide 
 - Reply to message in inbox thread to respond to user
 - /block - Block that user whose chat history is in view
 - /manage_users - Menu to unblock/delete users
+- Bot should be the admin of the channels you want the user's to be joined in
 
 # Setup
 - Clone repo
